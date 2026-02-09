@@ -127,8 +127,10 @@ function loadSongs() {
         `;
         li.addEventListener('click', () => {
             currentSongIndex = index;
-            showPage('detail');
+            // immediately show player and start playback for convenience
+            showPage('player');
             showSongDetail();
+            playCurrentSong();
         });
         songList.appendChild(li);
     });
