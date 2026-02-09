@@ -1,4 +1,4 @@
-# Music Playlist Player
+# WinxMPL
 
 A modern, responsive music player web application with an elegant dark theme interface.
 
