@@ -6,7 +6,7 @@ const songs = [
         artist: "Glass Animals",
         album: "Dreamland",
         duration: 243,
-        url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        url: "https://youtu.be/J9abt3xpdDU",
         image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Heat+Waves"
     },
     {
