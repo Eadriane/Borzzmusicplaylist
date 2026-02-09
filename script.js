@@ -1,16 +1,14 @@
 // Sample songs data
 const songs = [
-    // Updated first song in the songs array
     {
         id: 1,
-        title: "Beauty and a Beat",  // Fixed extra space
-        artist: "Justin Bieber",    // Fixed typo (assuming "Justine" was a mistake)
-        album: "Believe",           // Corrected to the actual album
-        duration: 694,              // Unchanged (matches real song length)
-        url: "https://res.cloudinary.com/dwc0m15mx/video/upload/v1770662174/Justin_Bieber_ft_Nicki_Minaj_-_Beauty_and_a_Beat_Lyrics_Jessie_J_Akon_idscnx.mp3",  // Unchanged (correct for this song)
-        image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Beauty+and+a+Beat"  // Updated placeholder; or use real art: "https://i.scdn.co/image/ab67616d0000b273629dc9e2e3bc20bbd7d92e4a"
+        title: "Beauty and the Beat",
+        artist: "Justin Bieber ft. Nicki Minaj",
+        album: "Single",
+        duration: 243,
+        url: "https://res.cloudinary.com/dwc0m15mx/video/upload/v1770662174/Justin_Bieber_ft_Nicki_Minaj_-_Beauty_and_a_Beat_Lyrics_Jessie_J_Akon_idscnx.mp3",
+        image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Beauty+And+The+Beat"
     },
-    // ... include the rest of your original songs array here (ids 2-6) to avoid breaking the app
     {
         id: 2,
         title: "Blinding Lights",
@@ -100,7 +98,16 @@ const detailAlbumArt = document.getElementById('detailAlbumArt');
 function init() {
     loadSongs();
     audioPlayer.addEventListener('timeupdate', updateProgress);
-    audioPlayer.addEventListener('ended', nextSong);
+    audioPlayer.addEventListener('ended', () => {
+        if (repeatMode === 2) {
+            audioPlayer.currentTime = 0;
+            audioPlayer.play();
+        } else if (repeatMode === 1) {
+            nextSong();
+        } else {
+            nextSong();
+        }
+    });
     audioPlayer.addEventListener('error', handleAudioError);
     playerPlayPauseBtn.addEventListener('click', togglePlayPause);
     playerPrevBtn.addEventListener('click', prevSong);
@@ -115,28 +122,33 @@ function init() {
     playFromDetailBtn.addEventListener('click', () => {
         playCurrentSong();
         showPage('player');
-    {
-        id: 1,
-        title: "Beauty and the Beat",
-        artist: "Justin Bieber ft. Nicki Minaj",
-        album: "Single",
-        duration: 243,
-        url: "https://res.cloudinary.com/dwc0m15mx/video/upload/v1770662174/Justin_Bieber_ft_Nicki_Minaj_-_Beauty_and_a_Beat_Lyrics_Jessie_J_Akon_idscnx.mp3",
-        image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Beauty+And+The+Beat"
-    },
-            <img src="${song.image}" alt="${song.title}">
-            <div class="song-item-title">${song.title}</div>
-            <div class="song-item-artist">${song.artist}</div>
-        `;
-        li.addEventListener('click', () => {
-            currentSongIndex = index;
-            // immediately show player and start playback for convenience
-            showPage('player');
-            showSongDetail();
-            playCurrentSong();
-        });
-        songList.appendChild(li);
     });
+}
+
+function loadSongs() {
+    try {
+        songList.innerHTML = '';
+        songs.forEach((song, index) => {
+            const li = document.createElement('li');
+            li.className = 'song-item';
+            li.innerHTML = `
+                <img src="${song.image}" alt="${song.title}">
+                <div class="song-item-title">${song.title}</div>
+                <div class="song-item-artist">${song.artist}</div>
+            `;
+            li.addEventListener('click', () => {
+                currentSongIndex = index;
+                // immediately show player and start playback for convenience
+                showPage('player');
+                showSongDetail();
+                playCurrentSong();
+            });
+            songList.appendChild(li);
+        });
+    } catch (e) {
+        console.error('Failed to load songs:', e);
+        songList.innerHTML = '<li class="loading-songs">Failed to load songs</li>';
+    }
 }
 
 function showSongDetail() {
@@ -158,12 +170,12 @@ function playCurrentSong() {
         console.warn('Playback blocked or failed:', err);
         isPlaying = false;
         updatePlayerDisplay();
-        alert('Playback blocked by the browser. Please click Play to start audio.');
     });
 }
 
 function handleAudioError() {
     console.error('Audio playback error:', audioPlayer.error);
+    // simple UI feedback
     alert('Failed to play this track. Skipping to the next track.');
     nextSong();
 }
@@ -173,7 +185,7 @@ function togglePlayPause() {
         audioPlayer.pause();
         isPlaying = false;
     } else {
-        audioPlayer.play();
+        audioPlayer.play().catch(err => console.warn('Play failed:', err));
         isPlaying = true;
     }
     updatePlayerDisplay();
@@ -209,7 +221,7 @@ function prevSong() {
 }
 
 function updateProgress() {
-    const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+    const percent = (audioPlayer.currentTime / audioPlayer.duration) * 100 || 0;
     playerProgressBar.style.width = percent + '%';
     playerCurrentTime.innerHTML = formatTime(audioPlayer.currentTime);
 }
@@ -217,8 +229,8 @@ function updateProgress() {
 function seek(e) {
     const width = playerProgressBarContainer.clientWidth;
     const clickX = e.offsetX;
-    const duration = audioPlayer.duration;
-    audioPlayer.currentTime = (clickX / width) * duration;
+    const duration = audioPlayer.duration || 0;
+    if (duration) audioPlayer.currentTime = (clickX / width) * duration;
 }
 
 function changeVolume(e) {
@@ -266,23 +278,11 @@ function showPage(page) {
 }
 
 function formatTime(seconds) {
-    if (isNaN(seconds)) return '0:00';
+    if (isNaN(seconds) || !isFinite(seconds)) return '0:00';
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
 }
-
-// Handle audio ended event based on repeat mode
-audioPlayer.addEventListener('ended', () => {
-    if (repeatMode === 2) {
-        audioPlayer.currentTime = 0;
-        audioPlayer.play();
-    } else if (repeatMode === 1) {
-        nextSong();
-    } else {
-        nextSong();
-    }
-});
 
 // Start the app
 init();
