@@ -1,22 +1,23 @@
 // Sample songs data
+// Sample songs data
 const songs = [
     {
         id: 1,
-        title: "Beauty and the Beat",
-        artist: "Justin Bieber ft. Nicki Minaj",
-        album: "Single",
-        duration: 243,
-        url: "https://res.cloudinary.com/dwc0m15mx/video/upload/v1770662174/Justin_Bieber_ft_Nicki_Minaj_-_Beauty_and_a_Beat_Lyrics_Jessie_J_Akon_idscnx.mp3",
-        image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Beauty+And+The+Beat"
+        title: "Mother De Cacao",
+        artist: "Novelyn Parcon",
+        album: "E.",
+        duration: 242,
+        url: "https://res.cloudinary.com/dwc0m15mx/video/upload/v1770739517/Ridleys_-_Be_with_you_Lyrics_zsem9q.mp3",
+        image: "assets/Novel.jfif"
     },
     {
         id: 2,
-        title: "Blinding Lights",
-        artist: "The Weeknd",
+        title: "Ladding Pride",
+        artist: "Ian El Nathan Rosales",
         album: "After Hours",
         duration: 200,
-        url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Blinding+Lights"
+        url: "https://res.cloudinary.com/dwc0m15mx/video/upload/v1770737642/Ben_Ben_-_The_Ones_We_Once_Loved_Official_Lyric_Video_ca1s5q.mp3",
+        image: "assets/Nathan.jfif"
     },
     {
         id: 3,
@@ -25,7 +26,7 @@ const songs = [
         album: "÷",
         duration: 263,
         url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-        image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Perfect"
+        image: "assets/song3.jpg"
     },
     {
         id: 4,
@@ -34,7 +35,7 @@ const songs = [
         album: "Future Nostalgia",
         duration: 203,
         url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-        image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Levitating"
+        image: "assets/song4.jpg"
     },
     {
         id: 5,
@@ -43,7 +44,7 @@ const songs = [
         album: "÷",
         duration: 234,
         url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
-        image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Shape+of+You"
+        image: "assets/song5.jpg"
     },
     {
         id: 6,
@@ -52,7 +53,7 @@ const songs = [
         album: "Divinely Uninspired",
         duration: 182,
         url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
-        image: "https://placehold.co/300x300/3a3a4e/e0e0e0?text=Someone+You+Loved"
+        image: "assets/song6.jpg"
     }
 ];
 
@@ -94,6 +95,9 @@ const detailTrackArtist = document.getElementById('detailTrackArtist');
 const detailAlbumName = document.getElementById('detailAlbumName');
 const detailAlbumArt = document.getElementById('detailAlbumArt');
 
+// Added DOM element for background video
+const backgroundVideo = document.getElementById('backgroundVideo');
+
 // Initialize
 function init() {
     loadSongs();
@@ -123,6 +127,8 @@ function init() {
         playCurrentSong();
         showPage('player');
     });
+
+    // Background video will remain playing while audio plays (user preference)
 }
 
 function loadSongs() {
@@ -132,13 +138,12 @@ function loadSongs() {
             const li = document.createElement('li');
             li.className = 'song-item';
             li.innerHTML = `
-                <img src="${song.image}" alt="${song.title}">
+                <img src="${song.image}" alt="${song.title}" onerror="this.onerror=null;this.src='assets/placeholder.svg'">
                 <div class="song-item-title">${song.title}</div>
                 <div class="song-item-artist">${song.artist}</div>
             `;
             li.addEventListener('click', () => {
                 currentSongIndex = index;
-                // immediately show player and start playback for convenience
                 showPage('player');
                 showSongDetail();
                 playCurrentSong();
@@ -156,7 +161,7 @@ function showSongDetail() {
     detailTrackTitle.innerHTML = song.title;
     detailTrackArtist.innerHTML = song.artist;
     detailAlbumName.innerHTML = song.album;
-    detailAlbumArt.src = song.image;
+    detailAlbumArt.src = song.image || 'assets/placeholder.svg';
 }
 
 function playCurrentSong() {
@@ -195,7 +200,7 @@ function updatePlayerDisplay() {
     const song = songs[currentSongIndex];
     playerTrackTitle.innerHTML = song.title;
     playerTrackArtist.innerHTML = song.artist;
-    albumArt.src = song.image;
+    albumArt.src = song.image || 'assets/placeholder.svg';
     
     if (isPlaying) {
         playerPlayPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -247,10 +252,10 @@ function toggleRepeat() {
     if (repeatMode === 0) {
         playerRepeatBtn.style.color = '#a0a0a0';
     } else if (repeatMode === 1) {
-        playerRepeatBtn.style.color = '#00d4ff';
+        playerRepeatBtn.style.color = '#f700ff';
     } else {
         playerRepeatBtn.innerHTML = '<i class="fas fa-repeat"></i><span style="font-size:0.7rem;">1</span>';
-        playerRepeatBtn.style.color = '#00d4ff';
+        playerRepeatBtn.style.color = '#f700ff';
         return;
     }
     playerRepeatBtn.innerHTML = '<i class="fas fa-repeat"></i>';
@@ -259,7 +264,7 @@ function toggleRepeat() {
 function toggleShuffle() {
     isShuffle = !isShuffle;
     if (isShuffle) {
-        playerShuffleBtn.style.color = '#00d4ff';
+        playerShuffleBtn.style.color = '#f700ff';
     } else {
         playerShuffleBtn.style.color = '#a0a0a0';
     }

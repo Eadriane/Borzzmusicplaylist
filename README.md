@@ -61,6 +61,11 @@ const songs = [
 
 ## Deployment
 
+### Background Video
+To use a custom background video, place an MP4 file named `bg.mp4` inside the `assets` folder (create it if needed).
+The player references `assets/bg.mp4` for the page background video.
+
+
 ### GitHub Pages
 1. Push this repo to GitHub
 2. Enable GitHub Pages in Settings
