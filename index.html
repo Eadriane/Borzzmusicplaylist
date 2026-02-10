@@ -3,19 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WinxMPL - Music Player</title>
+    <title>WINX - Music Player</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="video-background-container">
-        <video id="backgroundVideo" autoplay loop muted playsinline></video>
+        <video id="backgroundVideo" autoplay loop muted playsinline preload="auto">
+            <!-- Local MP4: using the file you added to the assets folder -->
+            <source src="assets/heart back.mp4" type="video/mp4">
+            <!-- Fallback for unsupported browsers -->
+            Your browser does not support the video tag.
+        </video>
         <div class="video-overlay"></div>
     </div>
 
     <div id="homePage" class="page active">
         <header>
-            <h1>WinxMPL</h1>
+            <h1>WINX
+            </h1>
         </header>
         <main>
             <ul id="songList" class="song-list">
@@ -48,7 +54,7 @@
                 </div>
 
                 <div id="lyricsContainer" class="lyrics-container">
-                    <p>Lyrics will appear here...</p>
+                    <p>Description of this Person...</p>
                 </div>
 
                 <div class="player-controls">
@@ -83,7 +89,7 @@
                         </div>
                     </div>
                 </div>
-                <p class="footer-credit">//code by: @Borjzz</p>
+                <p class="footer-credit">@Borjzz</p>
             </div>
         </div>
     </div>
